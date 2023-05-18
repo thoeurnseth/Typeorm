@@ -70,29 +70,53 @@ AppDataSource.initialize().then(async () => {
             // console.log("res=="+res);
         });   
 
-    // save relation between Photos and User1  one to many
+    // // save relation between Photos and User1 many to one 
+    // const photo1 = new Photos()
+    //     photo1.url = "me.jpg"
+    //     await AppDataSource.manager.save(photo1)
+        
+    // const photo2 = new Photos()
+    //     photo2.url = "me-and-bears.jpg"
+    //     await AppDataSource.manager.save(photo2)
+        
+    // const user1 = new User1()
+    //     user1.name = "John"
+    //     user1.photos = [photo1, photo2]
+    //     await AppDataSource.manager.save(user1)  
+
+    // // select relation between Photos and User1 one to many  
+    // const select_user = await AppDataSource
+    //     .getRepository(User1)
+    //     .createQueryBuilder("user1")
+    //     .leftJoinAndSelect("user1.photos", "photos")
+    //     .getMany().then((res)=>{
+    //         const response = JSON.stringify(res);
+    //         console.log(response);
+    //     });  
+
+    // save relation between Photos and User1 one to many  
+    const user1 = new User1()
+        user1.name = "Keo"
+        await AppDataSource.manager.save(user1)
+        
     const photo1 = new Photos()
-        photo1.url = "me.jpg"
+        photo1.url = "Keo.jpg"
+        photo1.user1 = user1
         await AppDataSource.manager.save(photo1)
         
     const photo2 = new Photos()
-        photo2.url = "me-and-bears.jpg"
-        await AppDataSource.manager.save(photo2)
-        
-    const user1 = new User1()
-        user1.name = "John"
-        user1.photos = [photo1, photo2]
-        await AppDataSource.manager.save(user1)    
+        photo2.url = "Keo-and-bears.jpg"
+        photo2.user1 = user1
+        await AppDataSource.manager.save(photo2)    
 
-
-    // select relation between Photos and User1  one to many
+    // select relation between Photos and User1 one to many
     const select_user = await AppDataSource
         .getRepository(Photos)
         .createQueryBuilder("photos")
         .leftJoinAndSelect("photos.user1", "user1")
         .getMany().then((res)=>{
-            // console.log(res);
-        });   
+            console.log(res);
+        });    
 
     // save relation between Category and Question  many to many
     const category1 = new Category()
