@@ -28,8 +28,8 @@ AppDataSource.initialize().then(async () => {
         .where("user.id = :id", { id: 1 })
         .getManyAndCount().then(([res,totalCount])=>{
             // const response = JSON.parse(JSON.stringify(res));
-            console.log(res);
-            console.log(totalCount);
+            // console.log(res);
+            // console.log(totalCount);
         });
     
     // updata data
@@ -115,7 +115,7 @@ AppDataSource.initialize().then(async () => {
         .createQueryBuilder("photos")
         .leftJoinAndSelect("photos.user1", "user1")
         .getMany().then((res)=>{
-            console.log(res);
+            // console.log(res);
         });    
 
     // save relation between Category and Question  many to many
@@ -143,7 +143,22 @@ AppDataSource.initialize().then(async () => {
             // console.log(response);
         });  
 
-
+    // select subquery
+    const qb =  AppDataSource.getRepository(Photos).createQueryBuilder("photos")
+    const posts = await qb
+        .where(
+            "photos.user1Id IN " +
+                qb
+                    .subQuery()
+                    .select("user1.id")
+                    .from(User1, "user1")
+                    .where("user1.id = :id")
+                    .getQuery(),
+        )
+        .setParameter("id", 1)
+        .getMany().then((res)=>{
+            console.log(res);
+        });  
 
 
     // const category = await AppDataSource
